@@ -43,7 +43,6 @@ def drop_database(config: str):
     the config.yml using the parameters
     provided in the .env file.
     """
-    config = './inputs/config.yml'
 
     # drop database, users and roles
     core.drop_database(config)
