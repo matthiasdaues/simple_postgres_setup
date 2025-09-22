@@ -57,50 +57,37 @@ def create_policies(config: str):
 
             # enable every user designated to have the "all" access tier to 
             # grant the tier specific access privileges on future objects
-            if access_tier == 'all':
-                with engine.connect() as conn:
-                    transaction = conn.begin()
-                    try:
-                        conn.execute(alter_def_priv_all_tables)
-                        write_to_setup_statements(setup_statements, alter_def_priv_all_tables)
-                        write_to_undo_statements(undo_statements, reset_def_priv_all_tables)
-                        conn.execute(alter_def_priv_all_sequences)                        
-                        write_to_setup_statements(setup_statements, alter_def_priv_all_sequences)
-                        write_to_undo_statements(undo_statements, reset_def_priv_all_sequences)
-                        conn.execute(alter_def_priv_all_functions)                        
-                        write_to_setup_statements(setup_statements, alter_def_priv_all_functions)
-                        write_to_undo_statements(undo_statements, reset_def_priv_all_functions)
-                        conn.execute(alter_def_priv_use_tables)
-                        write_to_setup_statements(setup_statements, alter_def_priv_use_tables)
-                        write_to_undo_statements(undo_statements, reset_def_priv_use_tables)
-                        conn.execute(alter_def_priv_use_sequences)
-                        write_to_setup_statements(setup_statements, alter_def_priv_use_sequences)
-                        write_to_undo_statements(undo_statements, reset_def_priv_use_sequences)
-                        conn.execute(alter_def_priv_r)
-                        write_to_setup_statements(setup_statements, alter_def_priv_r)
-                        write_to_undo_statements(undo_statements, reset_def_priv_r)
-                        conn.execute(grant_privilege)
-                        write_to_setup_statements(setup_statements, grant_privilege)
-                        write_to_undo_statements(undo_statements, revoke_privilege)
-                        transaction.commit()                        
-                        message = text(f"INFO: User {user} has been granted privilege {schema}_{access_tier}")
-                        write_to_log(log, message)
-                        message = text(f"INFO: Default privileges for future objects in schema altered.")
-                        write_to_log(log, message)
-                    except SQLAlchemyError as e:
-                        message = text(f"ERROR: {e}")
-                        write_to_log(log, message)
-                    continue
-            # grant all other policies without altering default privileges
-            else:
-                with engine.connect() as conn:
-                    transaction = conn.begin()
-                    try:
-                        conn.execute(grant_privilege)
-                        transaction.commit()
-                        message = text(f"INFO: User {user} has been granted privilege {schema}_{access_tier}")
-                        write_to_log(log, message)
-                    except SQLAlchemyError as e:
-                        message = text(f"ERROR: {e}")
-                        write_to_log(log, message)
-                    continue
+            with engine.connect() as conn:
+                transaction = conn.begin()
+                try:
+                    conn.execute(alter_def_priv_all_tables)
+                    write_to_setup_statements(setup_statements, alter_def_priv_all_tables)
+                    write_to_undo_statements(undo_statements, reset_def_priv_all_tables)
+                    conn.execute(alter_def_priv_all_sequences)                        
+                    write_to_setup_statements(setup_statements, alter_def_priv_all_sequences)
+                    write_to_undo_statements(undo_statements, reset_def_priv_all_sequences)
+                    conn.execute(alter_def_priv_all_functions)                        
+                    write_to_setup_statements(setup_statements, alter_def_priv_all_functions)
+                    write_to_undo_statements(undo_statements, reset_def_priv_all_functions)
+                    conn.execute(alter_def_priv_use_tables)
+                    write_to_setup_statements(setup_statements, alter_def_priv_use_tables)
+                    write_to_undo_statements(undo_statements, reset_def_priv_use_tables)
+                    conn.execute(alter_def_priv_use_sequences)
+                    write_to_setup_statements(setup_statements, alter_def_priv_use_sequences)
+                    write_to_undo_statements(undo_statements, reset_def_priv_use_sequences)
+                    conn.execute(alter_def_priv_r)
+                    write_to_setup_statements(setup_statements, alter_def_priv_r)
+                    write_to_undo_statements(undo_statements, reset_def_priv_r)
+                    conn.execute(grant_privilege)
+                    write_to_setup_statements(setup_statements, grant_privilege)
+                    write_to_undo_statements(undo_statements, revoke_privilege)
+                    transaction.commit()                        
+                    message = text(f"INFO: User {user} has been granted privilege {schema}_{access_tier}")
+                    write_to_log(log, message)
+                    message = text(f"INFO: Default privileges for future objects in schema altered.")
+                    write_to_log(log, message)
+                except SQLAlchemyError as e:
+                    message = text(f"ERROR: {e}")
+                    write_to_log(log, message)
+                continue
+
