@@ -1,0 +1,3 @@
+v0.2.0
+
+- add dotenv to db_connect.py to find any .env file in the respective project folder structure

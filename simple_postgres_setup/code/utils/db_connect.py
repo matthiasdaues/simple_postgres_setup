@@ -1,5 +1,10 @@
 import os
 import yaml
+from pathlib import Path
+from dotenv import load_dotenv, find_dotenv
+
+# This will search up the directory tree for a .env file
+load_dotenv(find_dotenv())
 
 def get_cluster_connection():
     """
